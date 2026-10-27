@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>For You 🤍</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;1,400&family=Dancing+Script:wght@600&family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fff5f7; --bg2:#ffe9ef; --rose:#f4a8bd; --deep:#d9628a; --ink:#5a3a46; --soft:#8c6573; --card:#ffffffcc;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Quicksand',sans-serif;color:var(--ink);background:linear-gradient(180deg,var(--bg),var(--bg2) 50%,var(--bg));overflow-x:hidden}
+h1,h2{font-family:'Playfair Display',serif;font-weight:500}
+.script{font-family:'Dancing Script',cursive}
+section{padding:90px 20px;max-width:1000px;margin:0 auto;text-align:center}
+.title{font-size:clamp(28px,5vw,44px);margin-bottom:10px}
+.sub{color:var(--soft);margin-bottom:46px}
+
+/* floating hearts */
+#hearts{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.heart{position:absolute;bottom:-40px;opacity:.0;animation:float linear forwards}
+@keyframes float{0%{transform:translateY(0) rotate(0);opacity:0}10%{opacity:.7}100%{transform:translateY(-110vh) rotate(40deg);opacity:0}}
+main,#intro{position:relative;z-index:1}
+
+/* intro envelope */
+#intro{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(160deg,#fff0f4,#ffd9e4);transition:opacity 1s,visibility 1s;text-align:center;padding:20px}
+#intro.hide{opacity:0;visibility:hidden}
+.envelope{font-size:90px;cursor:pointer;animation:beat 1.6s infinite}
+@keyframes beat{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+#intro p{margin-top:18px;font-size:26px;color:var(--deep)}
+#intro small{color:var(--soft);margin-top:8px}
+
+/* hero */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.hero h1{font-size:clamp(40px,9vw,84px);line-height:1.1;color:var(--deep)}
+.hero .script{font-size:clamp(22px,4vw,34px);color:var(--soft);margin-top:18px}
+.scroll{margin-top:50px;font-size:28px;animation:bob 2s infinite;color:var(--rose)}
+@keyframes bob{50%{transform:translateY(10px)}}
+
+/* timeline */
+.timeline{position:relative;display:flex;flex-direction:column;gap:70px}
+.timeline:before{content:"";position:absolute;left:50%;top:0;bottom:0;width:2px;background:repeating-linear-gradient(var(--rose) 0 8px,transparent 8px 16px);transform:translateX(-50%)}
+.memory{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;position:relative;opacity:0;transform:translateY(40px);transition:all .9s}
+.memory.show{opacity:1;transform:none}
+.memory:nth-child(even) .photo{order:2}
+.memory:after{content:"🤍";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:var(--bg);padding:4px;font-size:18px}
+.photo{background:#fff;padding:12px 12px 40px;border-radius:6px;box-shadow:0 12px 30px #d9628a30;transform:rotate(-2deg);cursor:zoom-in;transition:transform .4s}
+.memory:nth-child(even) .photo{transform:rotate(2deg)}
+.photo:hover{transform:rotate(0) scale(1.03)}
+.photo img{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:3px;display:block;background:#ffe3ea}
+.text{background:var(--card);backdrop-filter:blur(6px);border-radius:22px;padding:28px;text-align:left;box-shadow:0 8px 24px #d9628a18}
+.text .date{color:var(--deep);font-size:15px;font-weight:600;letter-spacing:1px}
+.text h3{font-family:'Playfair Display',serif;font-weight:500;font-size:24px;margin:6px 0 10px}
+.text p{line-height:1.7;color:var(--soft)}
+
+/* reasons */
+.reasons{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
+.reason{background:var(--card);border-radius:20px;padding:26px 20px;box-shadow:0 8px 24px #d9628a18;transition:transform .3s}
+.reason:hover{transform:translateY(-6px)}
+.reason span{font-size:30px;display:block;margin-bottom:8px}
+
+/* letter */
+.letter{background:#fffdf8;border-radius:10px;padding:clamp(28px,6vw,60px);box-shadow:0 18px 50px #d9628a30;text-align:left;line-height:1.95;font-size:18px;position:relative;background-image:repeating-linear-gradient(transparent 0 34px,#f6dfe5 34px 35px)}
+.letter p{margin-bottom:20px}
+.letter .sig{font-size:34px;color:var(--deep);text-align:right}
+
+/* final */
+.final h2{font-size:clamp(30px,6vw,54px);color:var(--deep);margin-bottom:30px}
+.btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;min-height:70px;align-items:center}
+button{font-family:inherit;font-size:18px;border:none;border-radius:40px;padding:14px 34px;cursor:pointer;transition:transform .2s}
+#yes{background:linear-gradient(135deg,#f58aa9,var(--deep));color:#fff;box-shadow:0 8px 20px #d9628a55}
+#yes:hover{transform:scale(1.08)}
+#no{background:#fff;color:var(--soft);border:1px solid var(--rose);position:relative}
+#answer{margin-top:30px;font-size:22px;color:var(--deep);display:none}
+footer{padding:40px;color:var(--soft);font-size:14px;position:relative;z-index:1;text-align:center}
+
+/* funny twists */
+.bar{width:min(300px,70vw);height:14px;border-radius:20px;background:#fff;box-shadow:inset 0 2px 6px #d9628a30;margin:16px auto 8px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#f9b7ca,var(--deep));border-radius:20px;transition:width .3s}
+.tag{position:absolute;top:-10px;right:-10px;background:#fff3b0;color:#6b5a00;font-size:12px;font-weight:600;padding:5px 10px;border-radius:4px;transform:rotate(6deg);box-shadow:0 3px 8px #0002}
+.photo{position:relative}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px}
+.stat{background:var(--card);border-radius:20px;padding:24px 16px;box-shadow:0 8px 24px #d9628a18}
+.stat b{display:block;font-family:'Playfair Display',serif;font-size:36px;color:var(--deep);margin-bottom:6px}
+.stat span{color:var(--soft);font-size:15px}
+.cert{background:#fffdf8;border:3px double var(--rose);border-radius:14px;padding:30px 26px;text-align:left;box-shadow:0 14px 40px #d9628a25}
+.cert h3{text-align:center;font-family:'Playfair Display',serif;font-weight:500;font-size:24px;color:var(--deep);margin-bottom:6px}
+.cert .small{text-align:center;color:var(--soft);font-size:14px;margin-bottom:20px}
+.cert label{display:flex;gap:12px;align-items:flex-start;padding:10px 0;cursor:pointer;line-height:1.5;border-bottom:1px dashed #f3d3dc}
+.cert input{accent-color:var(--deep);width:20px;height:20px;margin-top:2px;flex:none}
+#toast{position:fixed;left:50%;bottom:30px;transform:translate(-50%,120px);background:var(--deep);color:#fff;padding:14px 22px;border-radius:30px;z-index:200;transition:transform .4s;max-width:90vw;text-align:center;box-shadow:0 8px 24px #0003}
+#toast.on{transform:translate(-50%,0)}
+
+/* lightbox */
+#lb{position:fixed;inset:0;background:#2a1520e6;display:none;align-items:center;justify-content:center;z-index:100;padding:20px;cursor:zoom-out}
+#lb img{max-width:100%;max-height:90vh;border-radius:8px}
+#lb.on{display:flex}
+
+/* music */
+#music{position:fixed;right:16px;bottom:16px;z-index:60;width:48px;height:48px;padding:0;border-radius:50%;background:#fff;box-shadow:0 6px 16px #d9628a40;font-size:22px;display:none}
+
+@media(max-width:720px){
+  .timeline:before{left:12px}
+  .memory{grid-template-columns:1fr;gap:20px;padding-left:28px}
+  .memory:nth-child(even) .photo{order:0}
+  .memory:after{left:12px;top:0;transform:translate(-50%,0)}
+}
+</style>
+</head>
+<body>
+
+<div id="hearts"></div>
+
+<div id="intro">
+  <div id="loader">
+    <p class="script" id="loadtxt">Loading apology…</p>
+    <div class="bar"><i id="barfill"></i></div>
+    <small id="pct">0%</small>
+  </div>
+  <div id="envwrap" style="display:none">
+    <div class="envelope" id="open">💌</div>
+    <p class="script">Okay okay, cbn Ha7dhrít. Nchllh ti3jbk…</p>
+    <small>inzl 3al envelope</small>
+  </div>
+</div>
+
+<button id="music" title="music">🎵</button>
+
+<main>
+  <section class="hero">
+    <p class="script" id="to"></p>
+    <h1>Our little<br>story 🤍</h1>
+    <p class="script">every moment with you mattered</p>
+    <div class="scroll">⌄</div>
+  </section>
+
+  <section>
+    <h2 class="title">Our Memories</h2>
+    <p class="sub">bjed kol la7dha 3adithe m3ak is hunting me habit n7ot chwy mnhm hne</p>
+    <div class="timeline" id="timeline"></div>
+  </section>
+
+  <section>
+    <h2 class="title">7ajet y3jbouni fik</h2>
+    <p class="sub">only a few, the list metoufech</p>
+    <div class="reasons" id="reasons"></div>
+  </section>
+
+  <section>
+    <h2 class="title">Totally Scientific Stats 📊</h2>
+    <p class="sub">peer-reviewed by nobody</p>
+    <div class="stats" id="stats"></div>
+  </section>
+
+  <section>
+    <h2 class="title">Official Apology Contract 📜</h2>
+    <p class="sub">please tick to accept my promises</p>
+    <div class="cert">
+      <h3>Terms &amp; Conditions of Being Your Person</h3>
+      <p class="small">inzil 3ala kol wehde bech ti9blhe haha</p>
+      <div id="promises"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="title">A letter for you</h2>
+    <p class="sub">from my heart, no excuses</p>
+    <div class="letter" id="letter"></div>
+  </section>
+
+  <section class="final">
+    <h2 id="question"></h2>
+    <div class="btns">
+      <button id="yes">Yes 🤍</button>
+      <button id="no">Not yet…</button>
+    </div>
+    <p id="answer" class="script"></p>
+  </section>
+
+  <footer>made with all my love 🤍</footer>
+</main>
+
+<div id="lb"><img alt=""></div>
+
+<script>
+/* ============================================================
+   ✏️  EDIT EVERYTHING HERE  — this is the only part you must change
+   ============================================================ */
+const CONFIG = {
+  herName: "Ghofrane",
+  myName:  "Youssef",
+
+  // Optional: music file in the same repo (e.g. "song.mp3"). Leave "" for none.
+  music: "",
+
+  // HOW TO ADD PHOTOS FROM GOOGLE DRIVE:
+  // 1. Upload photo to Drive → right click → Share → "Anyone with the link" (Viewer)
+  // 2. Copy link: https://drive.google.com/file/d/XXXXXXXX/view?usp=sharing
+  // 3. Paste ONLY the XXXXXXXX part (the file ID) as "id" below.
+  memories: [
+    { id: "1yxzQTCgd7ePmnpo6QPm43nOzQIQ2XQij", date: "How it started",      title: "Where it all began",    text: "Mn nhar hedhek 3rftk mekch chtkoun juste insen 3rftou fi 7yety" },
+    { id: "1T9IJx3EiZZjlQzeqi9OxNdl7pIMwdmfq", date: "It felt unreal",      title: "You and me ",   text: "awl mara n7ess fama insen bjed ntchrk m3ah fi brcha hajet w nfra7 ki nkoun m3ah" },
+    { id: "1YSBsR7gvs7UUhrlz-bG4N0CqEeZWCH06", date: "That random day",     title: "I loved u", text: "Wslt l point cbn 9olt i actually love her ma3dch nra fi 7ete insen e5r fi nya le shaby le 3aylti ken enti wa9the" },
+    { id: "1N123jlmkMQNgKQjeLRkgiQ5SIls7Walh", date: "it was going well",     title: "Manifestation 5atfit haha", text: "B3d mefelt etayra bsr9a 3ala 3aylti juste bech nrj3lk 3adine wa9t ma7leh alkhr mab3dhne" },
+    { id: "1th8fqGwyEw_6r2jhfcTRZsvJuFWRN4vg", date: "when you felt bad", title: "Jima eli rja3t fehe juste 3ala 5trk",           text: "The moment eli 7asit fih enk m3dch tjm w 9otli ysf hachty bik w was already planning how to come w jim3a heki me3mri chninsehe 3adithe 24h ghofrane wlh a dream" }
+  ],
+
+  reasons: [
+    ["😊", "Your smile", "It fixes any bad day instantly."],
+    ["🌸", "Your kindness", "The way you care about people."],
+    ["😂", "Our laughs", "Nobody makes me laugh like you."],
+    ["🤝", "How you support me", "You believed in me even when I didn't."],
+    ["✨", "Just you", "Everything about you, exactly as you are."],
+    ["🏡", "How you feel like home", "Peace, always."]
+  ],
+
+  letter: [
+    "Ghof hak ritni 9adeh mkbch ltaw fik 5trk bjed akthr insen yst79 ndhah7i brou7i 3ala 5atrou. Mli 3rftk w ene 7asis rouhi the happiest guy ever l9it linsen eli nifra7 ki nkoun m3ah w ki ne9f m3ah w ki nrah ydh7k. Mn awl nhar w ene 7atit fibeli eli ey haja cht5alik tadh7ak rani chn3ml lmouste7il bech na3mlhe. Hasit rouhk cv pas jitik mn 8odwa wa9tli jedi meyit w mecheditich s7i7. Mli 3rftk 7asitik 3awadhtli ness eli n3rfhm lkol. Ghofrane your just perfect ml5r. M3mri chnjm nousflk 9adeh blastk kbira fi 9alby. Insen ma7leh 3l5r mizyene kind w caring alkhr w a7la haja fik dha7ktk wlh.N7esk tfhmni w nfhmk w njmou n3ichou mab3dhne me8ir men5fou mn nadhrt b3dhne . I used to take a screenshot kol men7kiyw fil tlfn w nrak tadh7ak. Mli b3idt aliya dhlamt dinya m3dch nra fi 7ete sbeb 3ayich 3lyh lna w bejd wlh leni na7ki w bara ama ki rja3t b3d sep lhne 9olt lrouhi chnd5m w doubma n7sl hete chtar billet chnji l3id mildk w 9otlk mnjmch juste bech ykoun surprise. Kol nhar n9oum 9alby youj3ni. N3rf ey insen yt3ada bhajet s3iba w ene mn awl dinya 9otlk menich ml jma3a eli mekch chtl9ahom ki yst7a9ouk. W3dtk chnsbr w chn93d nhebk mehme ysiir w mehme tidhye9 dinya. Nchllh tjm ta3tini forsa o5ra nou3dk eli kol chy chyoli 5iir mn 9bel n7ebk trekz 3ala 9raytk w 3ichtk fi tunis w ene nistnk mehme ysiir ma3dch njm n3ich ble bik. nhebk barcha rouhi w bjed ncodi fl page w no8zr ltaswirtik be7dhey w fir7an alkhr.",
+  ],
+
+  // Funny extras — edit freely
+  stats: [
+    ["Kol l7adha", "times I re-read our old messages"],
+    ["Mfmch", "people funnier than you (I checked)"],
+    ["42.195 km", "I'd run for you comar, marathon-certified"],
+    ["100%", "sorry, 0% excuses"]
+  ],
+  promises: [
+    "Kol metrkb fil karhba n9olk el ya hak dh3oft el capteur mzmrch",
+    "Kol metit8chch nklmlk zdeff yji 8anilne",
+    "Kol met7ess rohk wahdk til9ani 9odmk",
+    "N3lmk almnd bech ta7ki m3al cliwountk fi bou",
+    "N5alik tsou9 biya el karhba fil autoroute",
+    "Nzid nhebk nhar wra nhar"
+  ],
+  impossibleIndex: 4, // this promise un-ticks itself 😂
+  secretMsg: "🥚 You found the secret! You're the best thing that ever happened to me.",
+
+  question: "Can we try again?",
+  yesReply: "You just made me the happiest person in the world 🤍",
+  noTexts: ["Hey, wait! 🥺", "Too slow 😏", "Can't catch me!", "Pretty please? 🤍", "I'll chase you all day", "Okay fine…"]
+};
+/* ============================================================ */
+
+const $ = s => document.querySelector(s);
+const driveUrl = (id, w=1200) => `https://drive.google.com/thumbnail?id=${id}&sz=w${w}`;
+const driveFallback = id => `https://lh3.googleusercontent.com/d/${id}=w${1200}`;
+
+// Names
+$('#to').textContent = `for ${CONFIG.herName}`;
+$('#question').textContent = CONFIG.question;
+$('#letter').innerHTML = CONFIG.letter.map(p=>`<p>${p}</p>`).join('') +
+  `<p class="sig script">— ${CONFIG.myName}</p>`;
+
+// Memories
+$('#timeline').innerHTML = CONFIG.memories.map((m,i) => `
+  <div class="memory">
+    <div class="photo"><span class="tag">${m.tag || 'Exhibit ' + String.fromCharCode(65+i) + ' 🔍'}</span><img loading="lazy" src="${driveUrl(m.id)}" data-id="${m.id}" alt="${m.title}"></div>
+    <div class="text"><div class="date">${m.date}</div><h3>${m.title}</h3><p>${m.text}</p></div>
+  </div>`).join('');
+
+// fallback if thumbnail fails
+document.querySelectorAll('.photo img').forEach(img=>{
+  img.addEventListener('error',()=>{ if(!img.dataset.fb){img.dataset.fb=1;img.src=driveFallback(img.dataset.id);} });
+});
+
+// Reasons
+$('#reasons').innerHTML = CONFIG.reasons.map(r=>`<div class="reason"><span>${r[0]}</span><b>${r[1]}</b><p style="color:var(--soft);margin-top:6px">${r[2]}</p></div>`).join('');
+
+// Reveal on scroll
+const io = new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting&&e.target.classList.add('show')),{threshold:.2});
+document.querySelectorAll('.memory').forEach(el=>io.observe(el));
+
+// Lightbox
+document.querySelectorAll('.photo').forEach(p=>p.addEventListener('click',()=>{
+  $('#lb img').src = p.querySelector('img').src; $('#lb').classList.add('on');
+}));
+$('#lb').addEventListener('click',()=>$('#lb').classList.remove('on'));
+
+// Floating hearts
+const symbols = ['🤍','🌸','💗','✨','🩷'];
+function spawn(){
+  const h=document.createElement('div');h.className='heart';
+  h.textContent=symbols[Math.floor(Math.random()*symbols.length)];
+  h.style.left=Math.random()*100+'vw';
+  h.style.fontSize=(14+Math.random()*22)+'px';
+  const d=7+Math.random()*7;h.style.animationDuration=d+'s';
+  $('#hearts').appendChild(h);setTimeout(()=>h.remove(),d*1000);
+}
+setInterval(spawn,700);
+
+// Toast helper
+function toast(t){
+  let el=$('#toast');
+  if(!el){el=document.createElement('div');el.id='toast';document.body.appendChild(el);}
+  el.textContent=t;requestAnimationFrame(()=>el.classList.add('on'));
+  clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('on'),3200);
+}
+
+// Stats
+$('#stats').innerHTML = CONFIG.stats.map(s=>`<div class="stat"><b>${s[0]}</b><span>${s[1]}</span></div>`).join('');
+
+// Promises (one is impossible 😂)
+$('#promises').innerHTML = CONFIG.promises.map((p,i)=>`<label><input type="checkbox" data-i="${i}"><span>${p}</span></label>`).join('');
+document.querySelectorAll('#promises input').forEach(cb=>cb.addEventListener('change',()=>{
+  if(+cb.dataset.i===CONFIG.impossibleIndex && cb.checked){
+    toast('Mzlt n5af 3ala rouhi b3d e5r mara 😂 ama mouch 5sara fiik haha.');
+    setTimeout(()=>cb.checked=false,700);
+  } else if(cb.checked){ for(let i=0;i<4;i++)setTimeout(spawn,i*80); }
+}));
+
+// Fake loading screen
+(function(){
+  let p=0;const msgs=['Loading apology…','Polishing the puppy eyes…','Buffering feelings…','Still loading… my WiFi is as bad as my timing'];
+  const t=setInterval(()=>{
+    p+=Math.random()*9+2;
+    if(p>=99){p=99;clearInterval(t);
+      $('#loadtxt').textContent='99%… stuck here (typical me) 😅';
+      setTimeout(()=>{$('#loader').style.display='none';$('#envwrap').style.display='block';},1800);
+    } else $('#loadtxt').textContent=msgs[Math.min(3,Math.floor(p/26))];
+    $('#barfill').style.width=p+'%';$('#pct').textContent=Math.floor(p)+'%';
+  },220);
+})();
+
+// Easter egg: tap the big title 5 times
+let taps=0;
+document.querySelector('.hero h1').addEventListener('click',()=>{
+  if(++taps===5){taps=0;toast(CONFIG.secretMsg);for(let i=0;i<50;i++)setTimeout(spawn,i*40);}
+});
+
+// Intro + music
+let audio=null;
+if(CONFIG.music){audio=new Audio(CONFIG.music);audio.loop=true;$('#music').style.display='block';}
+$('#open').addEventListener('click',()=>{
+  $('#intro').classList.add('hide');
+  if(audio){audio.play().catch(()=>{});}
+});
+$('#music').addEventListener('click',()=>{ if(!audio)return; audio.paused?audio.play():audio.pause(); });
+
+// Final question
+let n=0, gaveUp=false;
+function dodge(e){
+  if(gaveUp) return;
+  if(e) e.preventDefault();
+  n++;
+  const no=$('#no');
+  no.textContent=CONFIG.noTexts[Math.min(n-1,CONFIG.noTexts.length-1)];
+  $('#yes').style.transform=`scale(${1+Math.min(n,8)*0.1})`;
+  const r=Math.min(130,window.innerWidth/3);
+  no.style.transform=`translate(${(Math.random()*2-1)*r}px,${(Math.random()*2-1)*60}px) rotate(${(Math.random()*2-1)*12}deg)`;
+  if(n>=CONFIG.noTexts.length){
+    gaveUp=true;
+    no.style.transform='none';
+    no.textContent='Fine, YES 🤍';
+    no.style.background='linear-gradient(135deg,#f58aa9,var(--deep))';
+    no.style.color='#fff';
+    no.addEventListener('click',()=>$('#yes').click());
+  }
+}
+['mouseenter','touchstart'].forEach(ev=>$('#no').addEventListener(ev,dodge,{passive:false}));
+$('#no').addEventListener('click',e=>{ if(!gaveUp) dodge(e); });
+$('#yes').addEventListener('click',()=>{
+  $('#answer').style.display='block';$('#answer').textContent=CONFIG.yesReply;
+  document.querySelector('.btns').style.display='none';
+  for(let i=0;i<60;i++)setTimeout(spawn,i*40);
+});
+</script>
+</body>
+</html>
