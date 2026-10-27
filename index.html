@@ -6,6 +6,26 @@
 <title>For You 🤍</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;1,400&family=Dancing+Script:wght@600&family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
+  /* password lock */
+#lock{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,#fff0f4,#ffd9e4);padding:20px;transition:opacity .8s,visibility .8s}
+#lock.hide{opacity:0;visibility:hidden}
+.lockbox{background:#ffffffd9;backdrop-filter:blur(8px);border-radius:26px;padding:36px 28px;max-width:340px;width:100%;text-align:center;box-shadow:0 16px 40px #d9628a35}
+.lockicon{font-size:50px;margin-bottom:6px}
+.lockbox .script{font-size:26px;color:var(--deep);margin-bottom:18px}
+.lockbox input{width:100%;font-family:inherit;font-size:17px;padding:13px 18px;border:1px solid var(--rose);border-radius:30px;outline:none;text-align:center;margin-bottom:14px;background:#fff;color:var(--ink)}
+.lockbox input:focus{border-color:var(--deep)}
+.lockbox button{width:100%;background:linear-gradient(135deg,#f58aa9,var(--deep));color:#fff;box-shadow:0 8px 20px #d9628a55}
+#hint{display:block;margin-top:16px;color:var(--soft)}
+#wrong{color:var(--deep);margin-top:10px;min-height:22px}
+@keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.shake{animation:shake .35s}
+.datebox{display:flex;gap:8px;align-items:center;justify-content:center;margin-bottom:14px}
+.datebox span{color:var(--rose);font-size:22px}
+.datebox input{margin:0;padding:13px 4px}
+#dd,#mm{width:60px}
+#yy{width:84px}
+.datebox input::placeholder{color:#d9a9b8;letter-spacing:1px}
+
 :root{
   --bg:#fff5f7; --bg2:#ffe9ef; --rose:#f4a8bd; --deep:#d9628a; --ink:#5a3a46; --soft:#8c6573; --card:#ffffffcc;
 }
@@ -110,12 +130,28 @@ footer{padding:40px;color:var(--soft);font-size:14px;position:relative;z-index:1
 </style>
 </head>
 <body>
+  <div id="lock">
+  <div class="lockbox">
+    <div class="lockicon">🔒</div>
+    <p class="script">This page lik enti…</p>
+      <div class="datebox">
+        <input id="dd" type="text" inputmode="numeric" maxlength="2" placeholder="DD" autocomplete="off">
+        <span>/</span>
+        <input id="mm" type="text" inputmode="numeric" maxlength="2" placeholder="MM" autocomplete="off">
+        <span>/</span>
+        <input id="yy" type="text" inputmode="numeric" maxlength="4" placeholder="YYYY" autocomplete="off">
+      </div>
+    <button id="unlock">Open 🤍</button>
+    <small id="hint"></small>
+    <p id="wrong"></p>
+  </div>
+</div>
 
 <div id="hearts"></div>
 
 <div id="intro">
   <div id="loader">
-    <p class="script" id="loadtxt">Loading apology…</p>
+    <p class="script" id="loadtxt">Loading chwy Sabr haha…</p>
     <div class="bar"><i id="barfill"></i></div>
     <small id="pct">0%</small>
   </div>
@@ -188,6 +224,48 @@ footer{padding:40px;color:var(--soft);font-size:14px;position:relative;z-index:1
 /* ============================================================
    ✏️  EDIT EVERYTHING HERE  — this is the only part you must change
    ============================================================ */
+   /* ===== PASSWORD ===== */
+const PASS_HASH = "f43a4b47771596dd2a1931ce068cb40051069456ee30df4e24bb6476a7fa97f2";   // see step below
+const PASS_HINT = "Hint: the date we got together";  // optional, "" for none
+
+async function sha(s){
+  const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s.trim().toLowerCase()));
+  return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
+}
+(function(){
+  const lock = document.getElementById('lock');
+  document.getElementById('hint').textContent = PASS_HINT;
+  document.body.style.overflow = 'hidden';
+  const open = () => { lock.classList.add('hide'); document.body.style.overflow = ''; };
+  try { if (sessionStorage.getItem('unlocked') === '1') return open(); } catch(e){}
+    const dd = document.getElementById('dd'), mm = document.getElementById('mm'), yy = document.getElementById('yy');
+
+  // only digits + auto-jump to the next box
+  [[dd,2,mm],[mm,2,yy],[yy,4,null]].forEach(([el,len,next])=>{
+    el.addEventListener('input',()=>{
+      el.value = el.value.replace(/\D/g,'');
+      if (next && el.value.length === len) next.focus();
+    });
+    el.addEventListener('keydown',e=>{
+      if (e.key === 'Enter') tryPw();
+      if (e.key === 'Backspace' && !el.value) { (el===yy?mm:el===mm?dd:null)?.focus(); }
+    });
+  });
+
+  const tryPw = async () => {
+    const v = dd.value.padStart(2,'0') + '/' + mm.value.padStart(2,'0') + '/' + yy.value;
+    if (await sha(v) === PASS_HASH) {
+      try { sessionStorage.setItem('unlocked','1'); } catch(e){}
+      open();
+    } else {
+      document.getElementById('wrong').textContent = 'Not quite… try again 🤍';
+      const box = document.querySelector('.lockbox');
+      box.classList.remove('shake'); void box.offsetWidth; box.classList.add('shake');
+    }
+  };
+  document.getElementById('unlock').addEventListener('click', tryPw);
+})();
+/* ===================== */
 const CONFIG = {
   herName: "Ghofrane",
   myName:  "Youssef",
